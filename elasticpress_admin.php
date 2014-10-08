@@ -41,8 +41,9 @@
  *
  * Deactivate if ElasticPress is not running
  */
-function epa_init() {
+function epa_activate_check() {
 	if ( class_exists( 'EP_ElasticPress' ) ) {
+
 		// Useful global constants
 		define( 'EPA_VERSION', '0.1.0' );
 		define( 'EPA_URL',     plugin_dir_url( __FILE__ ) );
@@ -50,11 +51,12 @@ function epa_init() {
 
 		require_once( EPA_PATH . 'includes/epa-init.php' );
 	} else {
+
 		// ElasticPress was unable to be found, deactivate plugin
-
-
-		add_action( 'admin_notice', function() {
-			echo '<div class="updated"><p><strong>Plug-in name</strong> was folded into WordPress core in 3.5; the plug-in has been <strong>deactivated</strong>.</p></div>';
+		// @todo need to think through use cases here - if we have subsites activated, different admin notices
+		// @todo also - need to think through dependency situation for network/subsites
+		add_action( 'network_admin_notices', function() {
+			echo '<div class="error"><p><strong>ElasticPress Admin</strong> requires <a href="http://github.com/10up/ElasticPress">ElasticPress</a>; the plug-in has been <strong>deactivated</strong>.</p></div>';
 			if ( isset( $_GET['activate'] ) )
 				unset( $_GET['activate'] );
 		});
@@ -65,21 +67,4 @@ function epa_init() {
 
 	}
 }
-add_action( 'plugins_loaded', 'epa_init' );
-
-//	if ( current_user_can( 'activate_plugins' ) ) {
-//
-//		add_action( 'admin_init', 'my_plugin_deactivate' );
-//		add_action( 'admin_notices', 'my_plugin_admin_notice' );
-//
-//		function my_plugin_deactivate() {
-//			deactivate_plugins( plugin_basename( __FILE__ ) );
-//		}
-//
-//		function my_plugin_admin_notice() {
-//			echo '<div class="updated"><p><strong>Plug-in name</strong> was folded into WordPress core in 3.5; the plug-in has been <strong>deactivated</strong>.</p></div>';
-//			if ( isset( $_GET['activate'] ) )
-//				unset( $_GET['activate'] );
-//		}
-//
-//	}
+add_action( 'plugins_loaded', 'epa_activate_check' );

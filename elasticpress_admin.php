@@ -35,44 +35,51 @@
  * https://github.com/10up/grunt-wp-plugin
  */
 
-// Useful global constants
-define( 'EPA_VERSION', '0.1.0' );
-define( 'EPA_URL',     plugin_dir_url( __FILE__ ) );
-define( 'EPA_PATH',    dirname( __FILE__ ) . '/' );
-
 /**
- * Default initialization for the plugin:
- * - Registers the default textdomain.
+ * This plugin requires ElasticPress
+ * http://github.com/10up/ElasticPress
+ *
+ * Deactivate if ElasticPress is not running
  */
 function epa_init() {
-	$locale = apply_filters( 'plugin_locale', get_locale(), 'epa' );
-	load_textdomain( 'epa', WP_LANG_DIR . '/epa/epa-' . $locale . '.mo' );
-	load_plugin_textdomain( 'epa', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	if ( class_exists( 'EP_ElasticPress' ) ) {
+		// Useful global constants
+		define( 'EPA_VERSION', '0.1.0' );
+		define( 'EPA_URL',     plugin_dir_url( __FILE__ ) );
+		define( 'EPA_PATH',    dirname( __FILE__ ) . '/' );
+
+		require_once( EPA_PATH . 'includes/epa-init.php' );
+	} else {
+		// ElasticPress was unable to be found, deactivate plugin
+
+
+		add_action( 'admin_notice', function() {
+			echo '<div class="updated"><p><strong>Plug-in name</strong> was folded into WordPress core in 3.5; the plug-in has been <strong>deactivated</strong>.</p></div>';
+			if ( isset( $_GET['activate'] ) )
+				unset( $_GET['activate'] );
+		});
+
+		add_action( 'admin_init', function() {
+			deactivate_plugins( plugin_basename( __FILE__ ) );
+		});
+
+	}
 }
+add_action( 'plugins_loaded', 'epa_init' );
 
-/**
- * Activate the plugin
- */
-function epa_activate() {
-	// First load the init scripts in case any rewrite functionality is being loaded
-	epa_init();
-
-	flush_rewrite_rules();
-}
-register_activation_hook( __FILE__, 'epa_activate' );
-
-/**
- * Deactivate the plugin
- * Uninstall routines should be in uninstall.php
- */
-function epa_deactivate() {
-
-}
-register_deactivation_hook( __FILE__, 'epa_deactivate' );
-
-// Wireup actions
-add_action( 'init', 'epa_init' );
-
-// Wireup filters
-
-// Wireup shortcodes
+//	if ( current_user_can( 'activate_plugins' ) ) {
+//
+//		add_action( 'admin_init', 'my_plugin_deactivate' );
+//		add_action( 'admin_notices', 'my_plugin_admin_notice' );
+//
+//		function my_plugin_deactivate() {
+//			deactivate_plugins( plugin_basename( __FILE__ ) );
+//		}
+//
+//		function my_plugin_admin_notice() {
+//			echo '<div class="updated"><p><strong>Plug-in name</strong> was folded into WordPress core in 3.5; the plug-in has been <strong>deactivated</strong>.</p></div>';
+//			if ( isset( $_GET['activate'] ) )
+//				unset( $_GET['activate'] );
+//		}
+//
+//	}

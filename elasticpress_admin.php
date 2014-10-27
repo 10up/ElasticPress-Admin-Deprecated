@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: ElasticPress Admin
+ * Plugin Name: ElasticPress Admin Search
  * Plugin URI:  http://github.com/10up/ElasticPress-Admin
- * Description: Extend Elasticsearch coverage to replace Admin search.
+ * Description: Extend Elasticsearch coverage to replace Admin search. Requires ElasticPress.
  * Version:     0.1.0
  * Author:      Aaron Holbrook, 10up
  * Author URI:  http://10up.com
@@ -55,16 +55,30 @@ function epa_activate_check() {
 		// ElasticPress was unable to be found, deactivate plugin
 		// @todo need to think through use cases here - if we have subsites activated, different admin notices
 		// @todo also - need to think through dependency situation for network/subsites
-		add_action( 'network_admin_notices', function() {
-			echo '<div class="error"><p><strong>ElasticPress Admin</strong> requires <a href="http://github.com/10up/ElasticPress">ElasticPress</a>; the plug-in has been <strong>deactivated</strong>.</p></div>';
-			if ( isset( $_GET['activate'] ) )
-				unset( $_GET['activate'] );
-		});
+		add_action( 'network_admin_notices', 'epa_deactivate_dependency_requirement' );
+		add_action( 'admin_notices', 'epa_deactivate_dependency_requirement' );
 
-		add_action( 'admin_init', function() {
-			deactivate_plugins( plugin_basename( __FILE__ ) );
-		});
+
+		add_action( 'admin_init', 'epa_deactivate_plugin' );
 
 	}
 }
 add_action( 'plugins_loaded', 'epa_activate_check' );
+
+/**
+ * Display notice requiring main ElasticPress requirement
+ */
+function epa_deactivate_dependency_requirement() {
+	echo '<div class="error"><p><strong>ElasticPress Admin</strong> requires <a href="http://github.com/10up/ElasticPress">ElasticPress</a>; the plug-in has been <strong>deactivated</strong>.</p></div>';
+
+	if ( isset( $_GET['activate'] ) ) {
+		unset( $_GET['activate'] );
+	}
+}
+
+/**
+ * Action to deactivate plugin. Used if main ElasticPress plugin is not currently active
+ */
+function epa_deactivate_plugin() {
+	deactivate_plugins( plugin_basename( __FILE__ ) );
+}

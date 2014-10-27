@@ -38,20 +38,19 @@ class EPATestSingleSite extends EPA_Test_Base {
 	}
 
 	/**
-	 * Test a simple post sync
+	 * Test a simple user search
 	 *
 	 * @since 0.9
 	 */
-	public function testPostSync() {
-		add_action( 'ep_sync_on_transition', array( $this, 'action_sync_on_transition' ), 10, 0 );
+	public function testUserSync() {
+		$user_id = epa_create_and_sync_user();
 
-		$post_id = ep_create_and_sync_post();
-
-		ep_refresh_index();
+//		ep_refresh_index();
 
 //		$this->assertTrue( ! empty( $this->fired_actions['ep_sync_on_transition'] ) );
 
-		$post = ep_get_post( $post_id );
-		$this->assertTrue( ! empty( $post ) );
+//		$post = ep_get_post( $post_id );
+		$this->assertTrue( ! empty( $user_id ) && is_int( $user_id ));
+
 	}
 }

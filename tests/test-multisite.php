@@ -80,7 +80,7 @@ class EPATestMultisite extends EPA_Test_Base {
 
 			add_action( 'ep_sync_on_transition', array( $this, 'action_sync_on_transition' ), 10, 0 );
 
-			$post_id = ep_create_and_sync_post();
+			$post_id = epa_create_and_sync_post();
 
 			ep_refresh_index();
 

@@ -3,13 +3,15 @@
 /**
  * Recursive version of PHP's in_array
  *
- * @todo Max recursion restriction
+ * @todo  Max recursion restriction
  * @since 0.1.2
+ *
  * @param mixed $needle
  * @param array $haystack
+ *
  * @return bool
  */
-function ep_deep_in_array( $needle, $haystack ) {
+function epa_deep_in_array( $needle, $haystack ) {
 	if ( in_array( $needle, $haystack, true ) ) {
 		return true;
 	}
@@ -30,22 +32,23 @@ function ep_deep_in_array( $needle, $haystack ) {
  *
  * @param array $post_args
  * @param array $post_meta
- * @param int $site_id
+ * @param int   $site_id
+ *
  * @since 0.9
  * @return int|WP_Error
  */
-function ep_create_and_sync_post( $post_args = array(), $post_meta = array(), $site_id = null ) {
+function epa_create_and_sync_post( $post_args = array(), $post_meta = array(), $site_id = null ) {
 	if ( $site_id != null ) {
 		switch_to_blog( $site_id );
 	}
 
-	$post_types = ep_get_indexable_post_types();
+	$post_types       = ep_get_indexable_post_types();
 	$post_type_values = array_values( $post_types );
 
 	$args = wp_parse_args( $post_args, array(
-		'post_type' => $post_type_values[0],
+		'post_type'   => $post_type_values[0],
 		'post_status' => 'publish',
-		'post_title' => 'Test Post ' . time(),
+		'post_title'  => 'Test Post ' . time(),
 	) );
 
 	$post_id = wp_insert_post( $args );
@@ -70,4 +73,15 @@ function ep_create_and_sync_post( $post_args = array(), $post_meta = array(), $s
 	}
 
 	return $post_id;
+}
+
+function epa_create_and_sync_user( $userdata = array() ) {
+
+	$args = wp_parse_args( $userdata, array(
+		'user_login' => 'login_name',
+		'user_url'   => 'http://example.com',
+		'user_pass'  => 'asdf123',
+	) );
+
+	return wp_insert_user( $args );
 }

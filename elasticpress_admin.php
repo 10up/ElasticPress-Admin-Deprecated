@@ -49,7 +49,7 @@ function epa_activate_check() {
 		define( 'EPA_URL',     plugin_dir_url( __FILE__ ) );
 		define( 'EPA_PATH',    dirname( __FILE__ ) . '/' );
 
-		require_once( EPA_PATH . 'includes/epa-init.php' );
+		require_once( EPA_PATH . 'includes/class-epa-integration.php' );
 	} else {
 
 		// ElasticPress was unable to be found, deactivate plugin
@@ -63,7 +63,7 @@ function epa_activate_check() {
 
 	}
 }
-add_action( 'plugins_loaded', 'epa_activate_check' );
+add_action( 'plugins_loaded', 'epa_activate_check', 8 );
 
 /**
  * Display notice requiring main ElasticPress requirement

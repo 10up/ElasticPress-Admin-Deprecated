@@ -16,6 +16,9 @@ class EPA_Integration {
 
 		// Override the admin integration in ElasticPress
 		add_filter( 'ep_admin_wp_query_integration', array( $this, 'admin_integration' ) );
+
+		// Search all available post meta fields
+		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 	}
 
 	/**
@@ -32,6 +35,12 @@ class EPA_Integration {
 		}
 
 		return $integration;
+	}
+
+	public function pre_get_posts( $query ) {
+		if ( is_admin() && is_main_query() ) {
+			$query->set( 'search_fields', array( 'meta' => '*' ) );
+		}
 	}
 
 	/**

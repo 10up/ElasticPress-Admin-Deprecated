@@ -30,7 +30,7 @@ class EPA_Integration {
 	 * @return bool
 	 */
 	public function admin_integration( $integration ) {
-		if ( is_admin() ) {
+		if ( is_admin() && apply_filters( 'epa_query_integration', true ) ) {
 			$integration = true;
 		}
 

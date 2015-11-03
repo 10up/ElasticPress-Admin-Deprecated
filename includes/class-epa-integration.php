@@ -18,7 +18,7 @@ class EPA_Integration {
 		add_filter( 'ep_admin_wp_query_integration', array( $this, 'admin_integration' ) );
 
 		// Search all available post meta fields
-		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+		add_filter( 'ep_search_fields', array( $this, 'ep_search_fields' ) );
 	}
 
 	/**
@@ -37,10 +37,11 @@ class EPA_Integration {
 		return $integration;
 	}
 
-	public function pre_get_posts( $query ) {
+	public function ep_search_fields( $fields ) {
 		if ( is_admin() && is_main_query() ) {
-			$query->set( 'search_fields', array( 'meta' => '*' ) );
+	    $fields[] = 'post_meta.*';
 		}
+	  return $fields;
 	}
 
 	/**

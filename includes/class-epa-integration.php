@@ -54,7 +54,7 @@ class EPA_Integration {
 
 		if ( ! $instance ) {
 			$instance = new self();
-			$instance->setup();
+			add_action( 'plugins_loaded', array( $instance, 'setup' ), 10 );
 		}
 
 		return $instance;

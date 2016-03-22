@@ -13,7 +13,6 @@ class EPA_Integration {
 	 *
 	 */
 	public function setup() {
-
 		// Override the admin integration in ElasticPress
 		add_filter( 'ep_admin_wp_query_integration', array( $this, 'admin_integration' ) );
 
@@ -54,7 +53,7 @@ class EPA_Integration {
 
 		if ( ! $instance ) {
 			$instance = new self();
-			$instance->setup();
+			add_action('plugins_loaded', array($instance, 'setup'), 10);
 		}
 
 		return $instance;
